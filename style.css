@@ -893,6 +893,28 @@ h1, h2, h3, h4, h5 {
   background: repeating-linear-gradient(45deg, rgba(236, 72, 153, 0.03) 0px, rgba(236, 72, 153, 0.03) 20px, transparent 20px, transparent 40px);
 }
 
+.placeholder-img-3 {
+  background: linear-gradient(120deg, #1e1b4b 0%, #311042 100%);
+  position: relative;
+}
+.placeholder-img-3::before {
+  content: '';
+  position: absolute;
+  width: 100%; height: 100%;
+  background-image: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 60%);
+}
+
+.placeholder-img-4 {
+  background: linear-gradient(120deg, #022c22 0%, #064e3b 100%);
+  position: relative;
+}
+.placeholder-img-4::before {
+  content: '';
+  position: absolute;
+  width: 100%; height: 100%;
+  background-image: repeating-radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0px, rgba(16, 185, 129, 0.05) 10px, transparent 10px, transparent 20px);
+}
+
 .project-overlay {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -997,6 +1019,12 @@ h1, h2, h3, h4, h5 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
+}
+
+.cert-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .cert-list {
@@ -1530,10 +1558,14 @@ footer {
   .social-links-hero {
     justify-content: center;
   }
-  
-  .hero-3d-visual {
-    margin-top: 40px;
-    transform: scale(0.8);
+  .hero-photo-wrapper {
+    height: 320px;
+    max-width: 280px;
+    margin: 0 auto 30px auto;
+  }
+
+  .float-pill {
+    display: none;
   }
   
   .skills-container {
@@ -1549,8 +1581,10 @@ footer {
     top: 100%;
     left: 0;
     width: 100%;
-    background: rgba(17, 24, 39, 0.98);
+    background: var(--bg-color-transparent);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--card-border);
     flex-direction: column;
     padding: 30px 0;
     text-align: center;
@@ -1568,6 +1602,18 @@ footer {
   }
 
   .achievement-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .edu-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profiles-grid {
     grid-template-columns: 1fr;
   }
 }

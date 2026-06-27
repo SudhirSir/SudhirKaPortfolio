@@ -6,30 +6,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelector('.nav-links');
     const glassNav = document.querySelector('.glass-nav');
 
-    // Toggle Mobile Menu
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        hamburger.innerHTML = navLinks.classList.contains('active') 
-            ? '<i class="fas fa-times"></i>' 
-            : '<i class="fas fa-bars"></i>';
-    });
-
-    // Close mobile menu when link is clicked
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+    if (hamburger && navLinks) {
+        // Toggle Mobile Menu
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
         });
-    });
+
+        // Close mobile menu when link is clicked
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+    }
 
     // Change Nav styling on scroll
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            glassNav.classList.add('scrolled');
-        } else {
-            glassNav.classList.remove('scrolled');
-        }
-    });
+    if (glassNav) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                glassNav.classList.add('scrolled');
+            } else {
+                glassNav.classList.remove('scrolled');
+            }
+        });
+    }
 
     /* ===== THEME TOGGLE (DARK/LIGHT MODE) ===== */
     const themeToggleBtn = document.getElementById('theme-toggle');
@@ -42,35 +46,37 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (currentTheme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
-        darkIcon.style.display = 'none';
-        lightIcon.style.display = 'block';
+        if (darkIcon) darkIcon.style.display = 'none';
+        if (lightIcon) lightIcon.style.display = 'block';
     }
 
-    themeToggleBtn.addEventListener('click', () => {
-        let theme = document.documentElement.getAttribute('data-theme');
-        if (theme === 'light') {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'dark');
-            darkIcon.style.display = 'block';
-            lightIcon.style.display = 'none';
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
-            darkIcon.style.display = 'none';
-            lightIcon.style.display = 'block';
-        }
-        // Re-init particles with new theme colors
-        if(typeof createParticles === 'function') {
-            createParticles();
-        }
-    });
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            if (theme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+                if (darkIcon) darkIcon.style.display = 'block';
+                if (lightIcon) lightIcon.style.display = 'none';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                if (darkIcon) darkIcon.style.display = 'none';
+                if (lightIcon) lightIcon.style.display = 'block';
+            }
+            // Re-init particles with new theme colors
+            if(typeof createParticles === 'function') {
+                createParticles();
+            }
+        });
+    }
 
     /* ===== CUSTOM CURSOR ===== */
     const cursorDot = document.querySelector('[data-cursor-dot]');
     const cursorOutline = document.querySelector('[data-cursor-outline]');
     
     // Check if device supports hover (not touch-only)
-    if (window.matchMedia("(hover: hover)").matches) {
+    if (window.matchMedia("(hover: hover)").matches && cursorDot && cursorOutline) {
         window.addEventListener('mousemove', function (e) {
             const posX = e.clientX;
             const posY = e.clientY;
@@ -301,57 +307,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ===== EMAILJS CONTACT FORM INTEGRATION ===== */
     const contactForm = document.getElementById('contact-form');
-    // Ensure emailjs is loaded
-    if (contactForm && typeof emailjs !== 'undefined') {
-        // We use dummy initialize because user will replace with their own.
-        emailjs.init('YOUR_PUBLIC_KEY');
+    
+    if (contactForm) {
+        if (typeof emailjs !== 'undefined') {
+            // We use dummy initialize because user will replace with their own.
+            emailjs.init('YOUR_PUBLIC_KEY');
+        }
 
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
             const btn = document.getElementById('send-btn');
-            const btnText = btn.querySelector('.btn-text');
-            const btnLoader = btn.querySelector('.btn-loader');
+            const btnText = btn ? btn.querySelector('.btn-text') : null;
+            const btnLoader = btn ? btn.querySelector('.btn-loader') : null;
             const toast = document.getElementById('form-toast');
             
             // Basic validation
-            const name = document.getElementById('contact-name').value;
-            const email = document.getElementById('contact-email').value;
-            const message = document.getElementById('contact-message').value;
+            const nameEl = document.getElementById('contact-name');
+            const emailEl = document.getElementById('contact-email');
+            const messageEl = document.getElementById('contact-message');
+            const subjectEl = document.getElementById('contact-subject');
+            
+            if (!nameEl || !emailEl || !messageEl) return;
+            
+            const name = nameEl.value.trim();
+            const email = emailEl.value.trim();
+            const message = messageEl.value.trim();
 
             if (!name || !email || !message) {
-                showToast(toast, 'error', 'Please fill in all required fields.');
+                if (toast) showToast(toast, 'error', 'Please fill in all required fields.');
                 return;
             }
 
             // Show loading state
-            btnText.style.display = 'none';
-            btnLoader.style.display = 'inline-block';
-            btn.disabled = true;
+            if (btnText) btnText.style.display = 'none';
+            if (btnLoader) btnLoader.style.display = 'inline-block';
+            if (btn) btn.disabled = true;
+
+            if (typeof emailjs === 'undefined') {
+                setTimeout(() => {
+                    if (toast) showToast(toast, 'error', 'Failed to send: EmailJS library failed to load. Please verify your internet connection or keys.');
+                    if (btn) resetBtn(btn, btnText, btnLoader);
+                }, 1000);
+                return;
+            }
 
             // Send Email Template variables to EmailJS
             const templateParams = {
                 from_name: name,
                 from_email: email,
-                subject: document.getElementById('contact-subject').value || 'New connection from Portfolio',
+                subject: (subjectEl ? subjectEl.value : '') || 'New connection from Portfolio',
                 message: message
             };
 
             emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
                 .then(function() {
-                    showToast(toast, 'success', 'Message sent successfully! I will get back to you soon.');
+                    if (toast) showToast(toast, 'success', 'Message sent successfully! I will get back to you soon.');
                     contactForm.reset();
-                    resetBtn(btn, btnText, btnLoader);
+                    if (btn) resetBtn(btn, btnText, btnLoader);
                 }, function(error) {
                     console.error('EmailJS Error:', error);
-                    showToast(toast, 'error', 'Failed to send message. Please replace YOUR_SERVICE_ID, YOUR_TEMPLATE_ID, and YOUR_PUBLIC_KEY with actual EmailJS keys.');
-                    resetBtn(btn, btnText, btnLoader);
+                    if (toast) showToast(toast, 'error', 'Failed to send message. Please replace YOUR_SERVICE_ID, YOUR_TEMPLATE_ID, and YOUR_PUBLIC_KEY with actual EmailJS keys.');
+                    if (btn) resetBtn(btn, btnText, btnLoader);
                 });
         });
 
         function showToast(toastEl, type, message) {
             toastEl.className = 'form-toast ' + type;
             toastEl.innerHTML = type === 'success' ? `<i class="fas fa-check-circle"></i> <span>${message}</span>` : `<i class="fas fa-exclamation-circle"></i> <span>${message}</span>`;
+            toastEl.style.display = 'flex';
             
             // Auto hide toast
             setTimeout(() => {
@@ -365,8 +389,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function resetBtn(btn, btnText, btnLoader) {
-            btnText.style.display = 'inline-block';
-            btnLoader.style.display = 'none';
+            if (btnText) btnText.style.display = 'inline-block';
+            if (btnLoader) btnLoader.style.display = 'none';
             btn.disabled = false;
         }
     }
